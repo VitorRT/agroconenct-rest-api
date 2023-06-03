@@ -145,7 +145,7 @@ Para listar todas os comentários de uma postagem
 <br />
 <br />
 
-
+## - Curtida
 
 Curtir uma postagem
 `POST` /curtida
