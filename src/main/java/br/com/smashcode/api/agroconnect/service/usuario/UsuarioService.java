@@ -2,15 +2,15 @@ package br.com.smashcode.api.agroconnect.service.usuario;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.EntityModel;
 
+import br.com.smashcode.api.agroconnect.dto.usuario.GetRequestUsuario;
 import br.com.smashcode.api.agroconnect.model.Usuario;
 
 public interface UsuarioService {
     
-    public Page<Usuario> searchAll(Pageable pageable, String search);
-    public EntityModel<Usuario> save(Usuario usuario);
-    public EntityModel<Usuario> findByIdOrElseThrowBadRequestExcepetion(String id);
-    public EntityModel<Usuario> updateByIdOrElseThrowBadRequestException(String id, Usuario usuario);
+    public Page<GetRequestUsuario> searchAll(Pageable pageable, String search);
+    public GetRequestUsuario save(Usuario usuario);
+    public GetRequestUsuario findByIdOrElseThrowBadRequestExcepetion(String id);
+    public GetRequestUsuario updateByIdOrElseThrowBadRequestException(String id, Usuario usuario);
     public void deleteByIdOrElseThrowBadRequestException(String id);
 }

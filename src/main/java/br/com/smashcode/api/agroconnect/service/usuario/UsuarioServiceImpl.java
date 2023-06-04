@@ -4,10 +4,10 @@ package br.com.smashcode.api.agroconnect.service.usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.smashcode.api.agroconnect.dto.usuario.GetRequestUsuario;
 import br.com.smashcode.api.agroconnect.exception.dto.BadRequestException;
 import br.com.smashcode.api.agroconnect.model.Usuario;
 import br.com.smashcode.api.agroconnect.repository.UsuarioRepository;
@@ -30,35 +30,41 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Page<Usuario> searchAll(Pageable pageable, String search) {
+    public Page<GetRequestUsuario> searchAll(Pageable pageable, String search) {
         if(search != null) {
-            return usuarioRepository.findByNomeContaining(pageable,search);
+            return usuarioRepository.findByNomeContaining(pageable,search).map(GetRequestUsuario::new);
         }
-        return usuarioRepository.findAll(pageable);
+        return usuarioRepository.findAll(pageable).map(GetRequestUsuario::new);
     }
 
     @Override
-    public EntityModel<Usuario> findByIdOrElseThrowBadRequestExcepetion(String id) {
-        return getUsuarioOrElseThrowBadRequestException(id).toEntityModel();
+    public GetRequestUsuario findByIdOrElseThrowBadRequestExcepetion(String id) {
+        Usuario usuario = getUsuarioOrElseThrowBadRequestException(id);
+        return toGetRequestUsuario(usuario);
     }
 
     @Override
-    public EntityModel<Usuario> save(Usuario usuario) {
+    public GetRequestUsuario save(Usuario usuario) {
         usuario.setSenha(encoder.encode(usuario.getSenha()));
         usuario.prepararRegistro();
-        return usuarioRepository.saveAndFlush(usuario).toEntityModel();
+        Usuario created = usuarioRepository.saveAndFlush(usuario);
+        return toGetRequestUsuario(created);
     }
 
     @Override
-    public EntityModel<Usuario> updateByIdOrElseThrowBadRequestException(String id, Usuario usuario) {
+    public GetRequestUsuario updateByIdOrElseThrowBadRequestException(String id, Usuario usuario) {
         Usuario found = getUsuarioOrElseThrowBadRequestException(id);
         usuario.prepararAtualizacao(found);
-        return usuarioRepository.saveAndFlush(usuario).toEntityModel();
+        Usuario updated = usuarioRepository.saveAndFlush(usuario);
+        return toGetRequestUsuario(updated);
     }
     
     private Usuario getUsuarioOrElseThrowBadRequestException(String id) {
         return usuarioRepository.findById(id).orElseThrow(
             () -> new BadRequestException("Nenhum usuário foi encontrado com esse id.")
         );
+    }
+    private GetRequestUsuario toGetRequestUsuario(Usuario usuario) {
+        return new GetRequestUsuario(usuario);
     }
 }
