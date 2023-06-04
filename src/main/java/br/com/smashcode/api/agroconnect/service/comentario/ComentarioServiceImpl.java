@@ -1,8 +1,8 @@
 package br.com.smashcode.api.agroconnect.service.comentario;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.smashcode.api.agroconnect.dto.comentario.GetRequestComentario;
@@ -35,16 +35,14 @@ public class ComentarioServiceImpl implements ComentarioService {
     }
 
     @Override
-    public List<GetRequestComentario> findAll() {
-        List<Comentario> comentarios = comentarioRepository.findAll();
-        return comentarios.stream().map(GetRequestComentario::new).toList();
+    public Page<GetRequestComentario> findAll(Pageable pageable) {
+        return  comentarioRepository.findAll(pageable).map(GetRequestComentario::new);
     }
 
     @Override
-    public List<GetRequestComentario> findAllByPostagem(String postagemId) {
+    public Page<GetRequestComentario> findAllByPostagem(String postagemId, Pageable pageable) {
         Postagem postagem = getPostagemOrElseThrowBadRequestException(postagemId);
-        List<Comentario> comentarios = comentarioRepository.findAllByPostagem(postagem);
-        return comentarios.stream().map(GetRequestComentario::new).toList();
+        return comentarioRepository.findAllByPostagem(postagem, pageable).map(GetRequestComentario::new);
     }
 
     @Override

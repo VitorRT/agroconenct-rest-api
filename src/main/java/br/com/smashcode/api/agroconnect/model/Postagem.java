@@ -5,10 +5,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.com.smashcode.api.agroconnect.controller.PostagemController;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -87,6 +91,15 @@ public class Postagem {
         this.dataAtualizacao = LocalDateTime.now();
         this.dataCriacao = postagem.getDataCriacao();
         this.usuario = postagem.getUsuario();
+    }
+
+    public EntityModel<Postagem> toEntityModel() {
+        return EntityModel.of(this,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PostagemController.class).show(id)).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PostagemController.class).destroy(id))
+                        .withRel("delete"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(PostagemController.class).search(Pageable.unpaged(),""))
+                        .withRel("all"));
     }
 
 }

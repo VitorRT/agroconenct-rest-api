@@ -1,8 +1,10 @@
 package br.com.smashcode.api.agroconnect.service.usuario;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 
 import br.com.smashcode.api.agroconnect.exception.dto.BadRequestException;
@@ -24,26 +26,29 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
+    public Page<Usuario> searchAll(Pageable pageable, String search) {
+        if(search != null) {
+            return usuarioRepository.findByNomeContaining(pageable,search);
+        }
+        return usuarioRepository.findAll(pageable);
     }
 
     @Override
-    public Usuario findByIdOrElseThrowBadRequestExcepetion(String id) {
-        return getUsuarioOrElseThrowBadRequestException(id);
+    public EntityModel<Usuario> findByIdOrElseThrowBadRequestExcepetion(String id) {
+        return getUsuarioOrElseThrowBadRequestException(id).toEntityModel();
     }
 
     @Override
-    public Usuario save(Usuario usuario) {
+    public EntityModel<Usuario> save(Usuario usuario) {
         usuario.prepararRegistro();
-        return usuarioRepository.saveAndFlush(usuario);
+        return usuarioRepository.saveAndFlush(usuario).toEntityModel();
     }
 
     @Override
-    public Usuario updateByIdOrElseThrowBadRequestException(String id, Usuario usuario) {
+    public EntityModel<Usuario> updateByIdOrElseThrowBadRequestException(String id, Usuario usuario) {
         Usuario found = getUsuarioOrElseThrowBadRequestException(id);
         usuario.prepararAtualizacao(found);
-        return usuarioRepository.saveAndFlush(usuario);
+        return usuarioRepository.saveAndFlush(usuario).toEntityModel();
     }
     
     private Usuario getUsuarioOrElseThrowBadRequestException(String id) {

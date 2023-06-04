@@ -3,9 +3,13 @@ package br.com.smashcode.api.agroconnect.model;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.com.smashcode.api.agroconnect.controller.ComentarioController;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -70,6 +74,15 @@ public class Comentario {
         this.usuario = comentario.getUsuario();
         this.postagem = comentario.getPostagem(); 
         
+    }
+
+    public EntityModel<Comentario> toEntityModel() {
+        return EntityModel.of(this,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ComentarioController.class).show(id)).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ComentarioController.class).destroy(id))
+                        .withRel("delete"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(ComentarioController.class).search(Pageable.unpaged()))
+                        .withRel("all"));
     }
 
 }

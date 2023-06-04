@@ -2,8 +2,13 @@ package br.com.smashcode.api.agroconnect.model;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import br.com.smashcode.api.agroconnect.controller.CurtidaController;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -78,6 +83,19 @@ public class Curtida {
             this.curtida = false;
             this.dataAtualizacao = LocalDateTime.now();
         }
+    }
+
+    public EntityModel<Curtida> toEntityModel() {
+        Curtida c = new Curtida();
+        return EntityModel.of(this,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CurtidaController.class).likePost(c))
+                        .withRel("like"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CurtidaController.class).deslikePost(id))
+                        .withRel("deslike"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CurtidaController.class).likePost(c))
+                        .withRel("all likes on a post"),        
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CurtidaController.class).search(Pageable.unpaged()))
+                        .withRel("all"));
     }
 
 }

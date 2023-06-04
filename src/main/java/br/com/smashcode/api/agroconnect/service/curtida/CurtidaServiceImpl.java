@@ -1,8 +1,8 @@
 package br.com.smashcode.api.agroconnect.service.curtida;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.smashcode.api.agroconnect.dto.curtida.GetRequestCurtida;
@@ -30,16 +30,14 @@ public class CurtidaServiceImpl implements CurtidaService {
 
 
     @Override
-    public List<GetRequestCurtida> findAll() {
-        List<Curtida> curtidas = curtidaRepository.findAll();
-        return curtidas.stream().map(GetRequestCurtida::new).toList();
+    public Page<GetRequestCurtida> findAll(Pageable pageable) {
+        return curtidaRepository.findAll(pageable).map(GetRequestCurtida::new);
     }
 
     @Override
-    public List<GetRequestCurtida> findAllByPostagemOrElseThrowBadRequestException(String postagemId) {
+    public Page<GetRequestCurtida> findAllByPostagemOrElseThrowBadRequestException(String postagemId, Pageable pageable) {
         Postagem postagem = getPostagemOrElseThrowBadRequestException(postagemId);
-        List<Curtida> curtidas = curtidaRepository.findAllByPostagem(postagem); 
-        return curtidas.stream().map(GetRequestCurtida::new).toList();
+        return curtidaRepository.findAllByPostagem(postagem, pageable).map(GetRequestCurtida::new);
     }
 
     @Override

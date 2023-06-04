@@ -5,11 +5,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
+import br.com.smashcode.api.agroconnect.controller.UsuarioController;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -74,6 +78,11 @@ public class Usuario {
     @Size(min=4, max=80, message="O email do usuario deve ter entre 4 e 80 caracteres.")
     private String email;
 
+    @Column(name="numero_contato", length=14)
+    @Size(min=14, message="O numero de contato do usuario deve ter 14 caracteres.")
+    @JsonProperty(value="numero_contato")
+    private String numeroContato;
+
     @Column(length=150)
     @JsonProperty(access = Access.WRITE_ONLY)
     @NotBlank(message="a senha do usuário não pode ser nula ou vazia.")
@@ -101,5 +110,15 @@ public class Usuario {
         this.dataAtualizacao = LocalDateTime.now();
         this.dataCriacao = usuario.getDataCriacao();
     };
+
+    
+    public EntityModel<Usuario> toEntityModel() {
+        return EntityModel.of(this,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioController.class).show(id)).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioController.class).destroy(id))
+                        .withRel("delete"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioController.class).search(Pageable.unpaged(), ""))
+                        .withRel("all"));
+    }
 
 }

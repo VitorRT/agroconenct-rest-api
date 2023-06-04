@@ -1,8 +1,11 @@
 package br.com.smashcode.api.agroconnect.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,14 +26,17 @@ public class CurtidaController {
     @Autowired
     private CurtidaService curtidaService;
 
+    @Autowired
+    PagedResourcesAssembler<GetRequestCurtida> assembler;
+
     @GetMapping
-    public ResponseEntity<List<GetRequestCurtida>> search() {
-        return ResponseEntity.ok(curtidaService.findAll());
+    public PagedModel<EntityModel<GetRequestCurtida>> search(@PageableDefault(size=5) Pageable pageable) {
+        return assembler.toModel(curtidaService.findAll(pageable));
     }
 
     @GetMapping("postagem/{postagemId}")
-    public ResponseEntity<List<GetRequestCurtida>> searchByPostagem(@PathVariable String postagemId) {
-        return ResponseEntity.ok(curtidaService.findAllByPostagemOrElseThrowBadRequestException(postagemId));
+    public PagedModel<EntityModel<GetRequestCurtida>> searchByPostagem(@PathVariable String postagemId, @PageableDefault(size=5) Pageable pageable) {
+        return assembler.toModel(curtidaService.findAllByPostagemOrElseThrowBadRequestException(postagemId,pageable));
     }
 
     @PostMapping

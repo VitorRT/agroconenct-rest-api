@@ -1,8 +1,11 @@
 package br.com.smashcode.api.agroconnect.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,9 +28,12 @@ public class ComentarioController {
     @Autowired
     private ComentarioService comentarioService;
 
+    @Autowired
+    PagedResourcesAssembler<GetRequestComentario> assembler;
+
     @GetMapping
-    public ResponseEntity<List<GetRequestComentario>> search() {
-        return ResponseEntity.ok(comentarioService.findAll());
+    public PagedModel<EntityModel<GetRequestComentario>> search(@PageableDefault(size=5) Pageable pageable) {
+        return assembler.toModel(comentarioService.findAll(pageable));
     }
 
     @PostMapping
@@ -52,7 +58,7 @@ public class ComentarioController {
     }
 
     @GetMapping("postagem/{postagemId}")
-    public ResponseEntity<List<GetRequestComentario>> searchByPostagem(@PathVariable String postagemId) {
-        return ResponseEntity.ok(comentarioService.findAllByPostagem(postagemId));
+    public PagedModel<EntityModel<GetRequestComentario>> searchByPostagem(@PathVariable String postagemId, @PageableDefault(size=5) Pageable pageable) {
+        return assembler.toModel(comentarioService.findAllByPostagem(postagemId,pageable));
     }
 }

@@ -1,8 +1,8 @@
 package br.com.smashcode.api.agroconnect.service.postagem;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.smashcode.api.agroconnect.dto.postagem.GetRequestPostagem;
@@ -31,16 +31,17 @@ public class PostagemServiceImpl implements PostagemService {
     }
 
     @Override
-    public List<GetRequestPostagem> findAll() {
-        List<Postagem> list = postagemRepository.findAll();
-        return list.stream().map(GetRequestPostagem::new).toList();
+    public Page<GetRequestPostagem> searchAll(Pageable pageable, String search) {
+        if(search != null) {
+            return postagemRepository.findByTituloContaining(pageable, search).map(GetRequestPostagem::new);
+        }
+        return postagemRepository.findAll(pageable).map(GetRequestPostagem::new);
     }
 
     @Override
-    public List<GetRequestPostagem> findAllByUsuario(String usuarioId) {
+    public Page<GetRequestPostagem> findAllByUsuario(String usuarioId, Pageable pageable) {
         Usuario usuario = getUsuarioOrElseThrowBadRequestException(usuarioId);
-        List<Postagem> list = postagemRepository.findAllByUsuario(usuario);
-        return list.stream().map(GetRequestPostagem::new).toList();
+        return postagemRepository.findAllByUsuario(usuario, pageable).map(GetRequestPostagem::new);
     }
 
     @Override

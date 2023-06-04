@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.hateoas.Links;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -40,6 +42,8 @@ public class GetRequestPostagem {
     @JsonProperty(value = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
+    private Links links;
+
     public GetRequestPostagem(Postagem postagem) {
         this.id = postagem.getId();
         this.usuario = UsuarioRelation.tpUsuarioRelation(postagem.getUsuario());
@@ -50,5 +54,6 @@ public class GetRequestPostagem {
         this.tipoPostagem = postagem.getTipoPostagem();
         this.dataCriacao = postagem.getDataCriacao();
         this.dataAtualizacao = postagem.getDataAtualizacao();
+        this.links = postagem.toEntityModel().getLinks();
     }
 }
