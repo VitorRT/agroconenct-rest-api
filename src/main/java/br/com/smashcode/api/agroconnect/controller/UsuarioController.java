@@ -41,7 +41,7 @@ public class UsuarioController {
         return assembler.toModel(page);
     }
 
-    @PostMapping
+    @PostMapping("signup")
     public ResponseEntity<EntityModel<Usuario>> create(@RequestBody @Valid Usuario usuario, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario));
     }

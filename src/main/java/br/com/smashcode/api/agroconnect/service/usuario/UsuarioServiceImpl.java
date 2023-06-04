@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.smashcode.api.agroconnect.exception.dto.BadRequestException;
@@ -18,6 +19,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public void deleteByIdOrElseThrowBadRequestException(String id) {
@@ -40,6 +44,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public EntityModel<Usuario> save(Usuario usuario) {
+        usuario.setSenha(encoder.encode(usuario.getSenha()));
         usuario.prepararRegistro();
         return usuarioRepository.saveAndFlush(usuario).toEntityModel();
     }
