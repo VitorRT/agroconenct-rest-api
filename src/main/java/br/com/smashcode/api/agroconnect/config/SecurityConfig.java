@@ -27,7 +27,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(authConfig -> {
                 authConfig.requestMatchers(HttpMethod.POST,"/usuario/signup").permitAll();
                 authConfig.requestMatchers(HttpMethod.POST,"/login").permitAll();
-                authConfig.requestMatchers(HttpMethod.GET,"/v3/api-docs/**", "/swagger-ui/**","/swagger-ui.html", "/swagger").permitAll();
+                authConfig.requestMatchers(HttpMethod.GET,"/v3/api-docs/**","/swagger-ui/**","/swagger-ui.html").permitAll();
+                authConfig.requestMatchers("/h2-console").permitAll();
                 authConfig.anyRequest().authenticated();
             })
             .csrf(c -> c.disable())
