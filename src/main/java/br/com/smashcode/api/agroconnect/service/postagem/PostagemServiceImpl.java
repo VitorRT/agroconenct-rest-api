@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 
 import br.com.smashcode.api.agroconnect.dto.postagem.GetRequestPostagem;
 import br.com.smashcode.api.agroconnect.exception.dto.BadRequestException;
+import br.com.smashcode.api.agroconnect.exception.rest.RestSwearWordException;
 import br.com.smashcode.api.agroconnect.model.Postagem;
 import br.com.smashcode.api.agroconnect.model.Usuario;
 import br.com.smashcode.api.agroconnect.repository.PostagemRepository;
 import br.com.smashcode.api.agroconnect.repository.UsuarioRepository;
+import br.com.smashcode.api.agroconnect.utils.swclassifier.WordClassifierML;
 import lombok.NoArgsConstructor;
 
 @Service
@@ -51,7 +53,8 @@ public class PostagemServiceImpl implements PostagemService {
     }
 
     @Override
-    public GetRequestPostagem save(Postagem postagem) {
+    public GetRequestPostagem save(Postagem postagem) throws RestSwearWordException {
+        verificarPostagem(postagem);
         postagem.prepararRegistro();
         Usuario usuario = getUsuarioOrElseThrowBadRequestException(postagem.getUsuario().getId());
         postagem.setUsuario(usuario);
@@ -60,7 +63,8 @@ public class PostagemServiceImpl implements PostagemService {
     }
 
     @Override
-    public GetRequestPostagem updateByIdOrElseThrowBadRequestException(String id, Postagem postagem) {
+    public GetRequestPostagem updateByIdOrElseThrowBadRequestException(String id, Postagem postagem) throws RestSwearWordException {
+        verificarPostagem(postagem);
         Postagem found = getPostagemOrElseThrowBadRequestException(id);
         postagem.prepararAtualizacao(found);
         Postagem updated = postagemRepository.saveAndFlush(postagem);
@@ -81,6 +85,21 @@ public class PostagemServiceImpl implements PostagemService {
         return usuarioRepository.findById(id).orElseThrow(
             () -> new BadRequestException("Nenhum usuário foi encontrado com esse id.")
         );
+    }
+
+    private void verificarPostagem(Postagem postagem) throws RestSwearWordException {
+        
+        // verificar titiulo da postagem
+        Boolean titleContaingSwearWord = WordClassifierML.sentenceWithSwearWord(postagem.getTitulo());
+        if(titleContaingSwearWord) {
+            throw new RestSwearWordException("O titulo da postagem contém palavras inapropriadas.");
+        }
+
+        // verificar conteudo da postagem
+        Boolean contentContaingSwearWord = WordClassifierML.sentenceWithSwearWord(postagem.getConteudo());
+        if(contentContaingSwearWord) {
+            throw new RestSwearWordException("O conteudo da postagem contém palavras inapropriadas.");
+        }
     }
     
 }

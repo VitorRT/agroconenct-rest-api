@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.smashcode.api.agroconnect.dto.comentario.GetRequestComentario;
+import br.com.smashcode.api.agroconnect.exception.rest.RestSwearWordException;
 import br.com.smashcode.api.agroconnect.model.Comentario;
 import br.com.smashcode.api.agroconnect.service.comentario.ComentarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +73,7 @@ public class ComentarioController {
         @ApiResponse(responseCode = "400", description = "Os dados enviados são inválidos.")
     }
     )
-    public ResponseEntity<GetRequestComentario> create(@RequestBody Comentario comentario) {
+    public ResponseEntity<GetRequestComentario> create(@RequestBody Comentario comentario) throws RestSwearWordException {
         return ResponseEntity.status(HttpStatus.CREATED).body(comentarioService.save(comentario));
     }
 
@@ -100,7 +101,7 @@ public class ComentarioController {
         @ApiResponse(responseCode = "400", description = "Não existe um comentário com esse ID.")
     }
     )
-    public ResponseEntity<GetRequestComentario> update(@PathVariable String id, @RequestBody Comentario comentario) {
+    public ResponseEntity<GetRequestComentario> update(@PathVariable String id, @RequestBody Comentario comentario) throws RestSwearWordException {
         return ResponseEntity.ok(comentarioService.updateByIdOrElseThrowBadRequestException(id, comentario));
     }
 

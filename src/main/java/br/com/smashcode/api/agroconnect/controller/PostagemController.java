@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.smashcode.api.agroconnect.dto.postagem.GetRequestPostagem;
+import br.com.smashcode.api.agroconnect.exception.rest.RestSwearWordException;
 import br.com.smashcode.api.agroconnect.model.Postagem;
 import br.com.smashcode.api.agroconnect.service.postagem.PostagemService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,7 +74,7 @@ public class PostagemController {
         @ApiResponse(responseCode = "400", description = "Os dados enviados são inválidos.")
     }
     )
-    public ResponseEntity<GetRequestPostagem> create(@RequestBody Postagem postagem) {
+    public ResponseEntity<GetRequestPostagem> create(@RequestBody Postagem postagem) throws RestSwearWordException {
         return ResponseEntity.status(HttpStatus.CREATED).body(postagemService.save(postagem));
     }
 
@@ -101,7 +102,7 @@ public class PostagemController {
         @ApiResponse(responseCode = "400", description = "Não existe uma postagem com esse ID.")
     }
     )
-    public ResponseEntity<GetRequestPostagem> update(@PathVariable String id, @RequestBody Postagem postagem) {
+    public ResponseEntity<GetRequestPostagem> update(@PathVariable String id, @RequestBody Postagem postagem) throws RestSwearWordException {
         return ResponseEntity.ok(postagemService.updateByIdOrElseThrowBadRequestException(id, postagem));
     }
     

@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 
 import br.com.smashcode.api.agroconnect.dto.comentario.GetRequestComentario;
 import br.com.smashcode.api.agroconnect.exception.dto.BadRequestException;
+import br.com.smashcode.api.agroconnect.exception.rest.RestSwearWordException;
 import br.com.smashcode.api.agroconnect.model.Comentario;
 import br.com.smashcode.api.agroconnect.model.Postagem;
 import br.com.smashcode.api.agroconnect.model.Usuario;
 import br.com.smashcode.api.agroconnect.repository.ComentarioRepository;
 import br.com.smashcode.api.agroconnect.repository.PostagemRepository;
 import br.com.smashcode.api.agroconnect.repository.UsuarioRepository;
+import br.com.smashcode.api.agroconnect.utils.swclassifier.WordClassifierML;
 import lombok.NoArgsConstructor;
 
 @Service
@@ -52,7 +54,8 @@ public class ComentarioServiceImpl implements ComentarioService {
     }
 
     @Override
-    public GetRequestComentario save(Comentario comentario) {
+    public GetRequestComentario save(Comentario comentario) throws RestSwearWordException {
+        verificarComentario(comentario);
         Usuario usuario = getUsuarioOrElseThrowBadRequestException(comentario.getUsuario().getId());
         Postagem postagem = getPostagemOrElseThrowBadRequestException(comentario.getPostagem().getId());
         comentario.setUsuario(usuario);
@@ -63,7 +66,8 @@ public class ComentarioServiceImpl implements ComentarioService {
     }
 
     @Override
-    public GetRequestComentario updateByIdOrElseThrowBadRequestException(String id, Comentario comentario) {
+    public GetRequestComentario updateByIdOrElseThrowBadRequestException(String id, Comentario comentario) throws RestSwearWordException {
+        verificarComentario(comentario);
         Comentario found = getComentarioOrElseThrowBadRequestException(id);
         comentario.prepararAtualizacao(found);
         Comentario updated = comentarioRepository.saveAndFlush(comentario);
@@ -91,6 +95,14 @@ public class ComentarioServiceImpl implements ComentarioService {
 
     private GetRequestComentario toGetRequestComentario(Comentario comentario) {
         return new GetRequestComentario(comentario);
+    }
+
+    private void verificarComentario(Comentario comentario) throws RestSwearWordException {
+        // verificar conteudo da postagem
+        Boolean contentContaingSwearWord = WordClassifierML.sentenceWithSwearWord(comentario.getConteudo());
+        if(contentContaingSwearWord) {
+            throw new RestSwearWordException("O conteudo do comentário contém palavras inapropriadas.");
+        }
     }
     
 }

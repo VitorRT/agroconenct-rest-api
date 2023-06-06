@@ -16,6 +16,7 @@ import br.com.smashcode.api.agroconnect.exception.RestValidationException;
 import br.com.smashcode.api.agroconnect.exception.dto.BadRequestException;
 import br.com.smashcode.api.agroconnect.exception.dto.ValidationException;
 import br.com.smashcode.api.agroconnect.exception.rest.RestException;
+import br.com.smashcode.api.agroconnect.exception.rest.RestSwearWordException;
 import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
@@ -57,6 +58,11 @@ public class GlobalRestExceptionHandler {
      @ExceptionHandler(TokenExpiredException.class)
      public ResponseEntity<RestException> TokenExpiredExceptionHandler(TokenExpiredException e) {
           return ResponseEntity.badRequest().body(new RestException(HttpStatus.BAD_REQUEST.value(), "jwt token",e.getMessage()));
+     }
+
+     @ExceptionHandler(RestSwearWordException.class) 
+     public ResponseEntity<RestException> RestSwearWordExceptionHandler(RestSwearWordException e) {
+          return ResponseEntity.badRequest().body(new RestException(HttpStatus.BAD_REQUEST.value(), "palavras inapropriadas.",e.getMessage()));
      }
 
 }
