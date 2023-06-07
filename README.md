@@ -1,5 +1,8 @@
 # Agro Connect 🍃🌐
 
+## Lindo do vídeo explicando o projeto: https://www.youtube.com/watch?v=RDOAcKtC-go
+
+
 ## Rest Api Endpoints
 
 ## - Usuário 
