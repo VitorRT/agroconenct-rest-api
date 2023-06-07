@@ -1,17 +1,29 @@
 # Agro Connect 🍃🌐
 
-## Lindo do vídeo explicando o projeto: https://www.youtube.com/watch?v=RDOAcKtC-go
+Bem-vindo ao Agro Connect, um aplicativo mobile blog especialmente desenvolvido para agricultores compartilharem suas experiências e conhecimentos com outros agricultores.
 
+## Assista ao vídeo explicativo do projeto: [📺 YouTube](https://www.youtube.com/watch?v=RDOAcKtC-go)
 
-## Rest Api Endpoints
+---
 
-## - Usuário 
+## Endpoints da API
 
-Cadastro de usuário (conta)
-`POST` /usuario
+**Link da API:** [https://agroconnect-api-v1.herokuapp.com/api/v1](https://agroconnect-api-v1.herokuapp.com/api/v1)
 
-json de cadastro:
-```js
+**Atenção ⚠:** Ao utilizar os endpoints, lembre-se de incluir o *context path* antes. Bom desenvolvimento! ☺
+
+---
+
+## Usuário
+
+### Cadastro de Usuário (Conta)
+
+- Método: `POST`
+- Endpoint: `/api/v1/usuario`
+
+**Exemplo de JSON de cadastro:**
+
+```json
 {
 	"nome": "vitor",
 	"email": "vitor@gmail.com",
@@ -19,11 +31,14 @@ json de cadastro:
 }
 ```
 
-Edição de usuário (conta)
-`PUT` /usuario/{id}
+### Edição de Usuário (Conta)
 
-json de edição:
-```js
+- Método: `PUT`
+- Endpoint: `/api/v1/usuario/{id}`
+
+**Exemplo de JSON de edição:**
+
+```json
 {
 	"nome": "vitor",
 	"email": "vitor@gmail.com",
@@ -31,146 +46,86 @@ json de edição:
 }
 ```
 
-Para detalhar um usuário
-`GET` /usuario/{id}
+### Detalhes de um Usuário
 
-Para deletar um usuário
-`DELETE` /usuario/{id}
+- Método: `GET`
+- Endpoint: `/api/v1/usuario/{id}`
 
-Para listar todos os usuários
-`GET` /usuario
+### Exclusão de um Usuário
 
+- Método: `DELETE`
+- Endpoint: `/api/v1/usuario/{id}`
 
-<br />
-<br />
-<br />
+### Listagem de Todos os Usuários
 
-## - Postagem 
+- Método: `GET`
+- Endpoint: `/api/v1/usuario`
 
-Cadastro de postagem 
-`POST` /postagem
+---
 
-json de cadastro:
-```js
+## Postagem
+
+### Cadastro de Postagem
+
+- Método: `POST`
+- Endpoint: `/api/v1/postagem`
+
+**Exemplo de JSON de cadastro:**
+
+```json
 {
 	"usuario": {
 		"id": "a3b5cd29-4bfa-4cb3-af96-f5cc00e9883f"
 	},
-	"titulo": "Titulo da postagem",
-	"conteudo": "conteudo sem limite de tamanho",
+	"titulo": "Título da postagem",
+	"conteudo": "Conteúdo sem limite de tamanho",
 	"tipo_postagem": "dicas"
 }
 ```
 
-Edição de uma postagem
-`PUT` /postagem/{id}
+### Edição de uma Postagem
 
-json de edição:
-```js
+- Método: `PUT`
+- Endpoint: `/api/v1/postagem/{id}`
+
+**Exemplo de JSON de edição:**
+
+```json
 {
 	"usuario": {
 		"id": "a3b5cd29-4bfa-4cb3-af96-f5cc00e9883f"
 	},
-	"titulo": "Titulo da postagem",
-	"conteudo": "conteudo sem limite de tamanho",
+	"titulo": "Título da postagem",
+	"conteudo": "Conteúdo sem limite de tamanho",
 	"tipo_postagem": "dicas"
 }
 ```
 
-Para detalhar uma postagem
-`GET` /postagem/{id}
+### Detalhes de uma Postagem
 
-Para deletar uma postagem
-`DELETE` /postagem/{id}
+- Método: `GET`
+- Endpoint: `/api/v1/postagem/{id}`
 
-Para listar todos as postagens
-`GET` /postagem
+### Exclusão de uma Postagem
 
-Para listar todas as postagens de um usuário
-`GET` /postagem/usuario/{usuarioId}
+- Método: `DELETE`
+- Endpoint: `/api/v1/postagem/{id}`
 
+### Listagem de Todas as Postagens
 
-<br />
-<br />
-<br />
+- Método: `GET`
+- Endpoint: `/api/v1/postagem`
 
+### Listagem de Todas as Postagens de um Usuário
 
-## - Comentario 
+- Método: `GET`
+- Endpoint: `/api/v1/postagem/usuario/{usuarioId}`
 
-Comentar em uma postagem
-`POST` /comentario
+---
 
-json de cadastro:
-```js
-{
-	"usuario": {
-		"id": "1679df71-01d9-42d8-862e-2da1b6254ac4"
-	},
- 	"postagem": {
-		"id": "288b560d-4f4c-4548-ab8f-b735478855d0"
-	},
-	"conteudo": "conteudo do comentario por enquanto sem limite de tamanho"
-}
-```
+## Comentário
 
-Edição de um comentário
-`PUT` /comentario/{id}
+### Comentar em uma Postagem
 
-json de edição:
-```js
-{
-	"usuario": {
-		"id": "1679df71-01d9-42d8-862e-2da1b6254ac4"
-	},
- 	"postagem": {
-		"id": "288b560d-4f4c-4548-ab8f-b735478855d0"
-	},
-	"conteudo": "conteudo do comentario por enquanto sem limite de tamanho"
-}
-```
-
-Para detalhar um comentário
-`GET` /comentario/{id}
-
-Para deletar um comentario
-`DELETE` /comentario/{id}
-
-Para listar todos os comentários
-`GET` /comentario
-
-Para listar todas os comentários de uma postagem
-`GET` /comentario/postagem/{postagemId}
-
-
-
-
-<br />
-<br />
-<br />
-
-## - Curtida
-
-Curtir uma postagem
-`POST` /curtida
-
-json da requisição:
-```js
-{
-	"usuario": {
-		"id": "1679df71-01d9-42d8-862e-2da1b6254ac4"
-	},
-	"postagem": {
-		"id": "288b560d-4f4c-4548-ab8f-b735478855d0"
-	}
-}
-```
-
-Para descurtir uma postagem
-`DELETE` /curtida/{id}
-
-
-Para listar todos as curtidas
-`GET` /curtida
-
-Para listar todos as curtidas de uma postagem
-`GET` /curtida/postagem/{postagemId}
+- Método: `POST`
+- Endpoint: `/api/v1/com
