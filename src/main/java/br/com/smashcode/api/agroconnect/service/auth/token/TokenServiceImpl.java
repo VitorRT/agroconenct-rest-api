@@ -12,6 +12,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import br.com.smashcode.api.agroconnect.dto.jwt.TokenUsuario;
 import br.com.smashcode.api.agroconnect.dto.usuario.AuthDataUsuario;
+import br.com.smashcode.api.agroconnect.exception.dto.BadRequestException;
 import br.com.smashcode.api.agroconnect.model.Usuario;
 import br.com.smashcode.api.agroconnect.repository.UsuarioRepository;
 
@@ -24,6 +25,9 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public TokenUsuario generateToken (AuthDataUsuario usuario) {
+        Usuario found = usuarioRepository.findByEmail(usuario.email()).orElseThrow(
+            () -> new BadRequestException("Nenhum usuário foi encontrado com esse email.")
+        );
         Algorithm alg = Algorithm.HMAC256("secret");
         var token = JWT.create()
                     .withSubject(usuario.email())
@@ -32,7 +36,7 @@ public class TokenServiceImpl implements TokenService {
                     .sign(alg)
                     ;
 
-        return new TokenUsuario(token, "JWT", "Bearer","Bearer " + token);
+        return new TokenUsuario(token, "JWT", "Bearer","Bearer " + token, found.getId());
     }
 
     @Override
