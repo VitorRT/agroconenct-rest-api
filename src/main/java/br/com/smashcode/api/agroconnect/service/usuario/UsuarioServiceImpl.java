@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.smashcode.api.agroconnect.dto.usuario.GetRequestUsuario;
+import br.com.smashcode.api.agroconnect.dto.usuario.PutRequestUsuario;
 import br.com.smashcode.api.agroconnect.exception.dto.BadRequestException;
 import br.com.smashcode.api.agroconnect.model.Usuario;
 import br.com.smashcode.api.agroconnect.repository.UsuarioRepository;
@@ -58,9 +59,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public GetRequestUsuario updateByIdOrElseThrowBadRequestException(String id, Usuario usuario) {
-        Usuario found = getUsuarioOrElseThrowBadRequestException(id);
-        usuario.prepararAtualizacao(found);
+    public GetRequestUsuario updateByIdOrElseThrowBadRequestException(String id, PutRequestUsuario usuarioDTO) {
+        Usuario usuario = getUsuarioOrElseThrowBadRequestException(id);
+        usuario.setNome(usuarioDTO.nome());
+        usuario.setEmail(usuarioDTO.email());
+        usuario.prepararAtualizacao(usuario);
         Usuario updated = usuarioRepository.saveAndFlush(usuario);
         log.info("[ Update ] - Usuário(a) \""+usuario.getNome()+"\" editado(a) com sucesso!");
         return toGetRequestUsuario(updated);

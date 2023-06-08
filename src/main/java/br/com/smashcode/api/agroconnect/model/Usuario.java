@@ -104,7 +104,6 @@ public class Usuario implements UserDetails {
     @JsonProperty(value = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
-
     public void prepararRegistro() {
         this.dataCriacao = LocalDateTime.now();
         this.dataAtualizacao = LocalDateTime.now();
@@ -116,7 +115,6 @@ public class Usuario implements UserDetails {
         this.dataCriacao = usuario.getDataCriacao();
     };
 
-    
     public EntityModel<Usuario> toEntityModel() {
         return EntityModel.of(this,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioController.class).show(id)).withSelfRel(),

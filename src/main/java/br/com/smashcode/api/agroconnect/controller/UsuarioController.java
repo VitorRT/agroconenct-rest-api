@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.smashcode.api.agroconnect.dto.usuario.GetRequestUsuario;
+import br.com.smashcode.api.agroconnect.dto.usuario.PutRequestUsuario;
 import br.com.smashcode.api.agroconnect.model.Usuario;
 import br.com.smashcode.api.agroconnect.service.usuario.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -94,7 +95,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "400", description = "Não existe um usuário com esse ID.")
     }
     )
-    public ResponseEntity<GetRequestUsuario> update(@PathVariable String id, @RequestBody @Valid Usuario usuario,  BindingResult result) {
+    public ResponseEntity<GetRequestUsuario> update(@PathVariable String id, @RequestBody @Valid PutRequestUsuario usuario,  BindingResult result) {
         return ResponseEntity.ok(usuarioService.updateByIdOrElseThrowBadRequestException(id, usuario));
     }
 
